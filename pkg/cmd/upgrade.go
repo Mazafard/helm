@@ -125,7 +125,7 @@ func newUpgradeCmd(cfg *action.Configuration, out io.Writer) *cobra.Command {
 				if err == driver.ErrReleaseNotFound || isReleaseUninstalled(versions) {
 					// Only print this to stdout for table output
 					if outfmt == output.Table {
-						fmt.Fprintf(out, "Release %q does not exist. Installing it now.\n", args[0])
+						_, _ = fmt.Fprintf(out, "Release %q does not exist. Installing it now.\n", args[0])
 					}
 					instClient := action.NewInstall(cfg)
 					instClient.CreateNamespace = createNamespace
@@ -166,6 +166,7 @@ func newUpgradeCmd(cfg *action.Configuration, out io.Writer) *cobra.Command {
 						debug:        settings.Debug,
 						showMetadata: false,
 						hideNotes:    instClient.HideNotes,
+						noColor:      settings.NoColor,
 					})
 				} else if err != nil {
 					return err
@@ -239,7 +240,7 @@ func newUpgradeCmd(cfg *action.Configuration, out io.Writer) *cobra.Command {
 			signal.Notify(cSignal, os.Interrupt, syscall.SIGTERM)
 			go func() {
 				<-cSignal
-				fmt.Fprintf(out, "Release %s has been cancelled.\n", args[0])
+				_, _ = fmt.Fprintf(out, "Release %s has been cancelled.\n", args[0])
 				cancel()
 			}()
 
@@ -249,7 +250,7 @@ func newUpgradeCmd(cfg *action.Configuration, out io.Writer) *cobra.Command {
 			}
 
 			if outfmt == output.Table {
-				fmt.Fprintf(out, "Release %q has been upgraded. Happy Helming!\n", args[0])
+				_, _ = fmt.Fprintf(out, "Release %q has been upgraded. Happy Helming!\n", args[0])
 			}
 
 			return outfmt.Write(out, &statusPrinter{
@@ -257,6 +258,7 @@ func newUpgradeCmd(cfg *action.Configuration, out io.Writer) *cobra.Command {
 				debug:        settings.Debug,
 				showMetadata: false,
 				hideNotes:    client.HideNotes,
+				noColor:      settings.NoColor,
 			})
 		},
 	}

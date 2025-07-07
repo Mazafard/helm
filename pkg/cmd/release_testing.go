@@ -78,13 +78,14 @@ func newReleaseTestCmd(cfg *action.Configuration, out io.Writer) *cobra.Command 
 				debug:        settings.Debug,
 				showMetadata: false,
 				hideNotes:    client.HideNotes,
+				noColor:      settings.NoColor,
 			}); err != nil {
 				return err
 			}
 
 			if outputLogs {
 				// Print a newline to stdout to separate the output
-				fmt.Fprintln(out)
+				_, _ = fmt.Fprintln(out)
 				if err := client.GetPodLogs(out, rel); err != nil {
 					return errors.Join(runErr, err)
 				}
